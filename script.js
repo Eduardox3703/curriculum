@@ -93,21 +93,37 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Form submission
     const contactForm = document.getElementById('contact-form');
-    
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-        
-        // Here you would typically send the form data to a server
-        // For this example, we'll just log it to console and show an alert
-        console.log('Form submitted:', { name, email, subject, message });
-        
-        alert('¡Gracias por tu mensaje! Te responderé lo antes posible.');
+
+contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = contactForm.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+
+await emailjs.send(
+    'service_k42owlm',
+    'template_liycqst',
+    {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        title: document.getElementById('subject').value,
+        message: document.getElementById('message').value,
+        time: new Date().toLocaleString()
+    }
+);
+
+        alert('Mensaje enviado correctamente');
         contactForm.reset();
-    });
+
+    } catch (error) {
+        console.error(error);
+        alert('Error al enviar mensaje');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Enviar Mensaje';
+});
 });
